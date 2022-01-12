@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include "game/game.h"
+#include "cute_headers/cute_tiled.h"
 
 int main() {
     GameOpt opt = {
