@@ -102,6 +102,8 @@
 */
 
 #if !defined(CUTE_TILED_H)
+#define CUTE_TILED_H
+
 
 // Read this in the event of errors
 extern const char* cute_tiled_error_reason;
@@ -370,7 +372,7 @@ struct cute_tiled_tileset_t
     int columns;                         // The number of tile columns in the tileset.
     int firstgid;                        // GID corresponding to the first tile in the set.
     /* grid */                           // Not currently supported.
-    cute_tiled_string_t image;           // Image used for tiles in this set (relative path from map file to source image).
+    const char *image;           // Image used for tiles in this set (relative path from map file to source image).
     int imagewidth;                      // Width of source image in pixels.
     int imageheight;                     // Height of source image in pixels.
     int margin;                          // Buffer between image edge and first tile (pixels).
@@ -389,7 +391,7 @@ struct cute_tiled_tileset_t
     int tilewidth;                       // Maximum width of tiles in this set.
     int transparentcolor;                // Hex-formatted color (#RRGGBB or #AARRGGBB) (optional).
     cute_tiled_string_t type;            // `tileset` (for tileset files, since 1.0).
-    cute_tiled_string_t source;          // Relative path to tileset, when saved externally from the map file.
+    const char *source;          // Relative path to tileset, when saved externally from the map file.
     cute_tiled_tileset_t* next;          // Pointer to next tileset. NULL if final tileset.
     float version;                       // The JSON format version (like 1.2).
     void* _internal;                     // For internal use only. Don't touch.

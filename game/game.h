@@ -6,13 +6,17 @@
 #define C_JAM_GAME_H
 
 #include <SDL.h>
+#include "scene.h"
+#include "player.h"
 
-#define GAME_WIDTH   640
-#define GAME_HEIGHT  480
+#define GAME_WIDTH   512
+#define GAME_HEIGHT  512
 
 typedef struct {
     SDL_Renderer *renderer;
     SDL_Window *window;
+    Scene *Scene;
+    Player Player;
 } Game;
 
 typedef struct {
