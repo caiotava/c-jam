@@ -26,3 +26,4 @@ target_link_libraries(
 )
 
 file(COPY assets DESTINATION .)
+file(COPY assets/maps/tilesets DESTINATION ./assets)
