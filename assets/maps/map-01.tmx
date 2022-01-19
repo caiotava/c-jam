@@ -3,7 +3,7 @@
  <editorsettings>
   <export target="map-01.json" format="json"/>
  </editorsettings>
- <tileset firstgid="1" name="cave" tilewidth="16" tileheight="16" tilecount="1920" columns="16">
+ <tileset firstgid="1" name="cave" tilewidth="16" tileheight="16" tilecount="480" columns="16">
   <grid orientation="orthogonal" width="8" height="8"/>
   <properties>
    <property name="image_source" value="assets/tileset/cave.png"/>
@@ -12,7 +12,7 @@
  </tileset>
  <layer id="1" name="Tile Layer 1" width="16" height="16">
   <data encoding="csv">
-241,242,242,306,242,242,242,242,242,242,242,242,242,242,247,243,
+241,242,242,306,242,242,242,242,242,242,242,306,242,242,247,243,
 257,258,258,258,258,258,258,258,258,258,258,258,258,258,258,259,
 257,258,258,258,258,258,258,258,258,258,258,258,258,258,258,259,
 257,258,258,258,258,258,258,258,258,258,258,258,258,258,258,259,
