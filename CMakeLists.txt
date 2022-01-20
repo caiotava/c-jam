@@ -10,13 +10,13 @@ find_package(SDL2_IMAGE REQUIRED)
 include_directories(
         ${SDL2_INCLUDE_DIR}
         ${SDL2_IMAGE_INCLUDE_DIR}
+        ${PROJECT_SOURCE_DIR}/include
+        ${PROJECT_SOURCE_DIR}
 )
 
 set(CMAKE_C_STANDARD 99)
 
-add_executable(c_jam main.c game/game.c render/image.c game/scene.c game/player.c)
-
-target_include_directories(c_jam PRIVATE ${PROJECT_SOURCE_DIR})
+add_executable(c_jam src/main.c src/game.c src/player.c src/scene.c src/image.c)
 
 # Set the link libraries
 target_link_libraries(

@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include "game/game.h"
+#include "game.h"
 
 int main() {
     GameOpt opt = {

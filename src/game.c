@@ -3,7 +3,7 @@
 //
 
 #include "game.h"
-#include "render/image.h"
+#include "image.h"
 #include "vendor/cute_headers/cute_tiled.h"
 
 void initScene(Game*);
@@ -55,9 +55,14 @@ Game* NewGame(GameOpt opt)
 
     Player player = {
             .y = 0,
-            .x = 0
+            .x = 0,
+            .Width = PLAYER_TILE_SIZE,
+            .Height = PLAYER_TILE_SIZE,
+            .CurrentFrame = 0,
+            .NumberOfFrames = 6
     };
 
+    player.Texture = LoadTexture("player.png", game->renderer);
     game->Player = player;
 
     return game;
@@ -207,10 +212,12 @@ void prepareScene(Game* game)
     SDL_RenderClear(game->renderer);
 
     SDL_Rect spot1 = {game->Player.x, game->Player.y, 200, 200};
+    SDL_Rect playerRect = {game->Player.x, game->Player.y, game->Player.Width, game->Player.Height};
 
     SDL_SetTextureAlphaMod(lightTexture, 255);
 
     SDL_RenderCopy(game->renderer, lightTexture, NULL, &spot1);
+    SDL_RenderCopy(game->renderer, game->Player.Texture, NULL, &playerRect);
 
     SDL_SetRenderTarget(game->renderer, NULL);
 
