@@ -200,6 +200,10 @@ void prepareScene(Game* game)
         SDL_RenderCopyEx(game->renderer, game->Scene->Tileset, &source, &dest, 0, 0, SDL_FLIP_NONE);
     }
 
+    SDL_Rect playerRect = {game->Player.x, game->Player.y, game->Player.Width*3, game->Player.Height*3};
+    SDL_Rect srcRect = {0, 0, game->Player.Width, game->Player.Height};
+    SDL_RenderCopy(game->renderer, game->Player.Texture, &srcRect, &playerRect);
+
     SDL_SetRenderTarget(game->renderer, NULL);
 
     // draw light points
@@ -211,13 +215,16 @@ void prepareScene(Game* game)
     // ----
     SDL_RenderClear(game->renderer);
 
-    SDL_Rect spot1 = {game->Player.x, game->Player.y, 200, 200};
-    SDL_Rect playerRect = {game->Player.x, game->Player.y, game->Player.Width, game->Player.Height};
+    SDL_Rect spot1 = {
+            game->Player.x -(200/2) + 30,
+            game->Player.y -(200/2) + 37,
+            200,
+            200
+    };
 
     SDL_SetTextureAlphaMod(lightTexture, 255);
 
     SDL_RenderCopy(game->renderer, lightTexture, NULL, &spot1);
-    SDL_RenderCopy(game->renderer, game->Player.Texture, NULL, &playerRect);
 
     SDL_SetRenderTarget(game->renderer, NULL);
 
