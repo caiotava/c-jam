@@ -10,11 +10,15 @@ void initScene(Game*);
 void prepareScene(Game* game);
 void doInput(Game*);
 void presentScene(Game*);
+void fixPlayerPosition(Game* game);
 
 SDL_Texture *lightTexture;
 SDL_Texture *backgroundLayer;
 SDL_Texture *lightLayer;
 SDL_Texture *resultLayer;
+
+const int FPS = 60;
+const int DELAY_TIME = 1000.0f / FPS;
 
 Game* NewGame(GameOpt opt)
 {
@@ -54,12 +58,13 @@ Game* NewGame(GameOpt opt)
     SDL_SetRenderDrawBlendMode(game->renderer, SDL_BLENDMODE_BLEND);
 
     Player player = {
-            .y = 0,
-            .x = 0,
-            .Width = PLAYER_TILE_SIZE,
-            .Height = PLAYER_TILE_SIZE,
+            .y = 50,
+            .x = 50,
+            .Width = 14*3,
+            .Height = 20*3,
             .CurrentFrame = 0,
-            .NumberOfFrames = 6
+            .NumberOfFrames = 4,
+            .Flip = SDL_FLIP_NONE
     };
 
     player.Texture = LoadTexture("player.png", game->renderer);
@@ -71,15 +76,22 @@ Game* NewGame(GameOpt opt)
 void RunGame(Game* game) {
     initScene(game);
 
+    Uint32 frameStart, frameTime;
+
     while (1)
     {
+        frameStart = SDL_GetTicks();
         prepareScene(game);
 
         doInput(game);
 
         presentScene(game);
 
-        SDL_Delay(16);
+        frameTime = SDL_GetTicks() - frameStart;
+
+        if (frameTime < DELAY_TIME) {
+            SDL_Delay(DELAY_TIME - frameTime);
+        };
     }
 }
 
@@ -114,12 +126,31 @@ void initScene(Game* game) {
 
         Sprite *sprite = malloc(sizeof(Sprite));
         sprite->ImageId = id;
-        sprite->X = (float)(i % mapWidth) * 16;
-        sprite->Y = (float)mapHeight * (i / mapWidth);
+        sprite->X = (float)(i % mapWidth) * 16 * 2;
+        sprite->Y = (float)mapHeight * (i / mapWidth) * 2;
         sprite->Sx = (float)(id % mapWidth) * 16;
         sprite->Sy = (float)mapHeight * (id / mapWidth);
+        sprite->CollisionHeight = 0;
+        sprite->CollisionWidth = 0;
 
         game->Scene->Sprites[i] = sprite;
+    }
+
+    for (int i = 0; i < game->Scene->TileCount; ++i) {
+        Sprite *sprite = game->Scene->Sprites[i];
+        cute_tiled_tile_descriptor_t* tile = tileset->tiles;
+
+        while (tile) {
+            if (tile->tile_index != sprite->ImageId) {
+                tile = tile->next;
+                continue;
+            }
+
+            sprite->CollisionHeight = tile->objectgroup->objects->height*2;
+            sprite->CollisionWidth = tile->objectgroup->objects->width*2;
+
+            tile = tile->next;
+        }
     }
 
     cute_tiled_free_map(map);
@@ -143,31 +174,54 @@ void doInput(Game* game)
                 exit(0);
                 break;
 
-            case SDL_KEYDOWN:
+            case SDL_KEYUP:
                 switch( event.key.keysym.sym )
                 {
                     case SDLK_UP:
-                        game->Player.y -= 15;
-                        break;
-
                     case SDLK_DOWN:
-                        game->Player.y += 15;
+                        game->Player.VelocityY = 0;;
                         break;
 
                     case SDLK_LEFT:
-                        game->Player.x -= 15;
-                        break;
-
                     case SDLK_RIGHT:
-                        game->Player.x += 15;
+                        game->Player.VelocityX = 0;
                         break;
                 }
 
+                game->Player.CurrentFrame = 0;
                 break;
 
             default:
                 break;
         }
+    }
+
+    const Uint8* keyState =  SDL_GetKeyboardState(NULL);
+
+    if (keyState[SDL_SCANCODE_LEFT]) {
+        game->Player.VelocityX = -1;
+    }
+    if (keyState[SDL_SCANCODE_RIGHT]) {
+        game->Player.VelocityX = 1;
+    }
+    if(keyState[SDL_SCANCODE_UP]) {
+        game->Player.VelocityY = -1;
+    }
+    if(keyState[SDL_SCANCODE_DOWN]) {
+        game->Player.VelocityY = 1;
+    }
+
+    if (game->Player.VelocityX != 0 || game->Player.VelocityY != 0) {
+        game->Player.CurrentFrame = SDL_GetTicks() / 100 % game->Player.NumberOfFrames;
+        //game->Player.CurrentFrame++;
+    }
+
+    if (game->Player.CurrentFrame >= game->Player.NumberOfFrames) {
+        game->Player.CurrentFrame = 0;
+    }
+
+    if (game->Player.VelocityX != 0) {
+        game->Player.Flip = SDL_FLIP_HORIZONTAL & (game->Player.VelocityX > 0);
     }
 }
 
@@ -187,8 +241,8 @@ void prepareScene(Game* game)
         SDL_Rect dest;
         SDL_Rect source;
 
-        dest.x = sprite->X * 2;
-        dest.y = sprite->Y * 2;
+        dest.x = sprite->X;
+        dest.y = sprite->Y;
         dest.w, source.w = 16;
         dest.h, source.h = 16;
 
@@ -200,9 +254,22 @@ void prepareScene(Game* game)
         SDL_RenderCopyEx(game->renderer, game->Scene->Tileset, &source, &dest, 0, 0, SDL_FLIP_NONE);
     }
 
-    SDL_Rect playerRect = {game->Player.x, game->Player.y, game->Player.Width*3, game->Player.Height*3};
-    SDL_Rect srcRect = {0, 0, game->Player.Width, game->Player.Height};
-    SDL_RenderCopy(game->renderer, game->Player.Texture, &srcRect, &playerRect);
+    game->Player.previousX = game->Player.x;
+    game->Player.previousY = game->Player.y;
+    game->Player.x += (game->Player.VelocityX * 5);
+    game->Player.y += (game->Player.VelocityY * 5);
+
+    fixPlayerPosition(game);
+
+    SDL_Rect playerRect = {game->Player.x, game->Player.y, game->Player.Width, game->Player.Height};
+    SDL_Rect srcRect = {
+            game->Player.CurrentFrame * (13 + 7) +3,
+            28,
+            14,
+            20
+    };
+
+    SDL_RenderCopyEx(game->renderer, game->Player.Texture, &srcRect, &playerRect, 0, 0, game->Player.Flip);
 
     SDL_SetRenderTarget(game->renderer, NULL);
 
@@ -241,6 +308,52 @@ void prepareScene(Game* game)
 
     SDL_SetRenderTarget(game->renderer, NULL);
     SDL_RenderCopy(game->renderer, resultLayer, NULL, &gameRect);
+}
+
+void fixPlayerPosition(Game* game) {
+    Player player = game->Player;
+
+    for (int i = 0; i < game->Scene->TileCount; ++i) {
+        Sprite *sprite = game->Scene->Sprites[i];
+
+        if (sprite->CollisionWidth == 0 || sprite->CollisionHeight == 0) {
+            continue;
+        }
+
+        int leftA, leftB;
+        int rightA, rightB;
+        int topA, topB;
+        int bottomA, bottomB;
+
+        leftA = player.x;
+        rightA = player.x + player.Width;
+        topA = player.y;
+        bottomA = player.y + player.Height;
+
+        leftB = sprite->X;
+        rightB = sprite->X + sprite->CollisionWidth;
+        topB = sprite->Y;
+        bottomB = sprite->Y + sprite->CollisionHeight;
+
+        if (bottomA <= topB) { continue; }
+        if (topA >= bottomB) { continue; }
+        if (rightA <= leftB) { continue; }
+        if (leftA >= rightB) { continue; }
+
+        if (game->Player.previousY >= topB && game->Player.previousY <= bottomB) {
+            if (leftA > leftB && leftA < rightB)
+                game->Player.x = rightB + 2;
+            if (rightA > leftB && rightA < rightB)
+                game->Player.x = leftB - player.Width - 2;
+        }
+
+        if (game->Player.previousX >= leftB && game->Player.previousX <= rightB) {
+            if (topA < bottomB && topA > topB)
+                game->Player.y = bottomB +1;
+            if (bottomA > topB && bottomA < bottomB)
+                game->Player.y = topB - player.Height - 2;
+        }
+    }
 }
 
 void presentScene(Game* game)

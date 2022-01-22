@@ -10,13 +10,14 @@
 const int PLAYER_TILE_SIZE;
 
 typedef struct {
-    int x;
-    int y;
+    int x, previousX;
+    int y, previousY;
     int Width;
     int Height;
     int CurrentFrame;
     int NumberOfFrames;
-    int velocityX, VelocityY;
+    int VelocityX, VelocityY;
+    SDL_RendererFlip Flip;
     SDL_Texture *Texture;
 } Player;
 

@@ -4,4 +4,4 @@
 
 #include "player.h"
 
-const int PLAYER_TILE_SIZE = 21;
+const int PLAYER_TILE_SIZE = 20;

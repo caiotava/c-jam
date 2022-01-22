@@ -11,6 +11,8 @@ typedef struct {
     int ImageId;
     float X, Y;
     float Sx, Sy;
+    float CollisionWidth;
+    float CollisionHeight;
 } Sprite;
 
 typedef struct {
