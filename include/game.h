@@ -17,6 +17,8 @@ typedef struct {
     SDL_Window *window;
     Scene *Scene;
     Player Player;
+    int Running;
+    int FinishGame;
 } Game;
 
 typedef struct {
