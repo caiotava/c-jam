@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.5" tiledversion="1.7.2" orientation="orthogonal" renderorder="right-down" width="16" height="16" tilewidth="16" tileheight="16" infinite="0" nextlayerid="2" nextobjectid="1">
+<map version="1.5" tiledversion="1.7.2" orientation="orthogonal" renderorder="right-down" width="16" height="16" tilewidth="16" tileheight="16" infinite="0" nextlayerid="3" nextobjectid="3">
  <editorsettings>
   <export target="map-01.json" format="json"/>
  </editorsettings>
@@ -34,6 +34,11 @@
     <object id="1" x="0" y="0" width="16" height="16"/>
    </objectgroup>
   </tile>
+  <tile id="267">
+   <objectgroup draworder="index" id="2">
+    <object id="1" x="0" y="0" width="16" height="16"/>
+   </objectgroup>
+  </tile>
   <tile id="272">
    <objectgroup draworder="index" id="2">
     <object id="1" x="0" y="0" width="16" height="16"/>
@@ -49,10 +54,25 @@
     <object id="1" x="0" y="0" width="16" height="16"/>
    </objectgroup>
   </tile>
+  <tile id="277">
+   <objectgroup draworder="index" id="2">
+    <object id="1" x="0" y="0" width="16" height="16"/>
+   </objectgroup>
+  </tile>
+  <tile id="283">
+   <objectgroup draworder="index" id="2">
+    <object id="1" x="0" y="0" width="16" height="16"/>
+   </objectgroup>
+  </tile>
+  <tile id="305">
+   <objectgroup draworder="index" id="2">
+    <object id="1" x="0" y="0" width="16" height="16"/>
+   </objectgroup>
+  </tile>
  </tileset>
  <layer id="1" name="Tile Layer 1" width="16" height="16">
   <data encoding="csv">
-241,242,242,306,242,242,242,242,242,242,242,306,242,242,247,243,
+241,242,242,242,242,242,458,458,458,242,242,306,242,242,242,243,
 257,258,258,258,258,258,258,258,258,258,258,258,258,258,258,259,
 257,258,258,258,258,258,258,258,258,258,258,258,258,258,258,259,
 257,258,258,258,258,258,258,258,258,258,258,258,258,258,258,259,
@@ -60,8 +80,8 @@
 257,258,258,258,258,258,258,258,258,258,258,258,258,258,258,259,
 257,258,258,258,258,258,258,258,258,258,258,258,258,258,258,259,
 278,258,258,258,258,258,258,258,258,258,258,258,258,258,258,259,
-257,258,258,258,258,258,258,258,258,258,258,258,258,258,258,259,
-257,258,258,258,258,258,258,258,258,258,258,258,258,258,258,259,
+257,258,258,258,258,258,285,268,268,268,268,269,258,258,258,259,
+257,258,258,258,258,258,285,284,284,284,284,269,258,258,258,259,
 257,258,258,258,258,258,258,258,258,258,258,258,258,258,258,259,
 257,258,258,258,258,258,258,258,258,258,258,258,258,258,258,259,
 257,258,258,258,258,258,258,258,258,258,258,258,258,258,258,259,
